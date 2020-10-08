@@ -11,6 +11,8 @@ namespace DHCPszimulacio
     class Program
     {
         static List<string> excluded = new List<string>();
+        static Dictionary<string, string> dhcp = new Dictionary<string, string>();
+        static Dictionary<string, string> reserved = new Dictionary<string, string>();
 
         static void BeolvasExcluded()
         {
@@ -41,6 +43,26 @@ namespace DHCPszimulacio
                 Console.WriteLine(ex.Message);
             }
         }
+
+        static void BeolvasDictionary(Dictionary<string, string> d, string filenev)
+        {
+            try
+            {
+                StreamReader file = new StreamReader(filenev);
+
+                while (!file.EndOfStream)
+                {
+                    string[] adatok = file.ReadLine().Split(';');
+                    d.Add(adatok[0], adatok[1]);
+                }
+            }
+            catch (Exception ex)
+            {
+
+                Console.WriteLine(ex.Message);
+            }
+        }
+
         static string CimEggyelNo(string cim)
         {
             /*
@@ -58,15 +80,18 @@ namespace DHCPszimulacio
             }
             return adatok[0] + "." + adatok[1] + "." + adatok[2] + "." + okt4.ToString();
         }
+        
 
         static void Main(string[] args)
         {
             BeolvasExcluded();
-            //foreach (var e in excluded)
-            //{
-            //    Console.WriteLine(e);
-            //}
-            //Console.WriteLine("\nVége-----------------------");
+            BeolvasDictionary(dhcp, "dhcp.csv");
+            BeolvasDictionary(reserved, "reserved.csv");
+            foreach (var e in reserved)
+            {
+                Console.WriteLine(e);
+            }
+            Console.WriteLine("\nVége-----------------------");
             Console.ReadKey();
         }
     }
